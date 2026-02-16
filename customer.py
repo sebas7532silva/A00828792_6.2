@@ -39,7 +39,7 @@ class Customer:
             data = json.loads(text)
             if not isinstance(data, list):
                 print(
-                    f"[ERROR] Invalid structure in {json_path}: expected list. "
+                    f"[ERROR] Invalid structure in {json_path}: expected list."
                     "Continuing with empty list."
                 )
                 return []
@@ -95,9 +95,14 @@ class Customer:
         data = Customer._load_raw(json_path)
         customer_id = Customer._next_id(data)
 
-        customer = Customer(customer_id=customer_id, name=name.strip(), email=email)
+        customer = Customer(
+            customer_id=customer_id,
+            name=name.strip(),
+            email=email)
         data.append(
-            {"customer_id": customer.customer_id, "name": customer.name, "email": customer.email}
+            {"customer_id": customer.customer_id,
+             "name": customer.name,
+             "email": customer.email}
         )
         Customer._save_raw(json_path, data)
         return customer
@@ -106,10 +111,10 @@ class Customer:
     def delete(json_path: Path, customer_id: str) -> None:
         """Delete a customer by ID."""
         data = Customer._load_raw(json_path)
-        new_data = [x for x in data if str(x.get("customer_id")) != customer_id]
-        if len(new_data) == len(data):
+        new = [x for x in data if str(x.get("customer_id")) != customer_id]
+        if len(new) == len(data):
             raise ValueError("customer not found")
-        Customer._save_raw(json_path, new_data)
+        Customer._save_raw(json_path, new)
 
     @staticmethod
     def get(json_path: Path, customer_id: str) -> Optional[Customer]:
@@ -151,7 +156,13 @@ class Customer:
         return result
 
     @staticmethod
-    def update(json_path: Path, customer_id: str, name: str, email: str) -> Customer:
+    def update(
+        json_path: Path,
+        customer_id: str,
+        name: str,
+        email: str,
+    ) -> Customer:
+
         """Modify customer info."""
         if not name.strip():
             raise ValueError("name cannot be empty")
@@ -163,7 +174,10 @@ class Customer:
 
         for idx, item in enumerate(data):
             if str(item.get("customer_id")) == customer_id:
-                updated = Customer(customer_id=customer_id, name=name.strip(), email=email)
+                updated = Customer(
+                    customer_id=customer_id,
+                    name=name.strip(),
+                    email=email)
                 data[idx] = {
                     "customer_id": updated.customer_id,
                     "name": updated.name,
