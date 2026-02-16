@@ -66,11 +66,14 @@ def _print_reservations() -> None:
         return
 
     for reservation in reservations:
-        print(
-            f"{reservation.reservation_id} | customer={reservation.customer_id} | "
-            f"hotel={reservation.hotel_id} | {reservation.status} | "
+        line = (
+            f"{reservation.reservation_id} | "
+            f"customer={reservation.customer_id} | "
+            f"hotel={reservation.hotel_id} | "
+            f"{reservation.status} | "
             f"{reservation.created_at}"
         )
+    print(line)
 
 
 def _create_customer() -> None:
@@ -133,7 +136,10 @@ def _create_reservation() -> None:
 
 def _cancel_reservation() -> None:
     reservation_id = input("Reservation ID: ").strip()
-    updated = Reservation.cancel(RESERVATIONS_JSON, HOTELS_JSON, reservation_id)
+    updated = Reservation.cancel(
+        RESERVATIONS_JSON,
+        HOTELS_JSON,
+        reservation_id)
     print("Updated:", updated)
 
 
