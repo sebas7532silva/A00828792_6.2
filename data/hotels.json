@@ -1,0 +1,16 @@
+[
+  {
+    "hotel_id": "HOT-0001",
+    "name": "Hilton Reforma",
+    "location": "CDMX",
+    "total_rooms": 3,
+    "reserved_rooms": 1
+  },
+  {
+    "hotel_id": "HOT-0002",
+    "name": "Fiesta Americana",
+    "location": "Monterrey",
+    "total_rooms": 2,
+    "reserved_rooms": 0
+  }
+]
