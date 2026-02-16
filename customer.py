@@ -28,7 +28,7 @@ class Customer:
     @staticmethod
     def _load_raw(json_path: Path) -> List[Dict[str, Any]]:
         """Load list from JSON. If invalid, print error and return empty."""
-        if not json_path.exists():si dame requirements.
+        if not json_path.exists():
             return []
 
         try:
