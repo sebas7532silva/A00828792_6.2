@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -156,11 +156,13 @@ class Reservation:
         data = Reservation._load_raw(reservations_json)
         reservation_id = Reservation._next_id(data)
 
+        created_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
+
         reservation = Reservation(
             reservation_id=reservation_id,
             customer_id=customer_id,
             hotel_id=hotel_id,
-            created_at=datetime.utcnow().isoformat(timespec="seconds"),
+            created_at=created_at,
             status="ACTIVE",
         )
 
