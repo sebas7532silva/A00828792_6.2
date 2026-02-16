@@ -14,6 +14,7 @@ Uses JSON files in ./data
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Callable, Dict
 
 from customer import Customer
 from hotel import Hotel
@@ -30,7 +31,7 @@ def _ensure_files() -> None:
     """Create empty JSON files if missing."""
     DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-    for path in [CUSTOMERS_JSON, HOTELS_JSON, RESERVATIONS_JSON]:
+    for path in (CUSTOMERS_JSON, HOTELS_JSON, RESERVATIONS_JSON):
         if not path.exists():
             path.write_text("[]", encoding="utf-8")
 
@@ -41,10 +42,10 @@ def _print_hotels() -> None:
         print("No hotels found.")
         return
 
-    for h in hotels:
+    for hotel in hotels:
         print(
-            f"{h.hotel_id} | {h.name} | {h.location} | "
-            f"{h.available_rooms}/{h.total_rooms} available"
+            f"{hotel.hotel_id} | {hotel.name} | {hotel.location} | "
+            f"{hotel.available_rooms}/{hotel.total_rooms} available"
         )
 
 
@@ -54,8 +55,8 @@ def _print_customers() -> None:
         print("No customers found.")
         return
 
-    for c in customers:
-        print(f"{c.customer_id} | {c.name} | {c.email}")
+    for customer in customers:
+        print(f"{customer.customer_id} | {customer.name} | {customer.email}")
 
 
 def _print_reservations() -> None:
@@ -64,110 +65,126 @@ def _print_reservations() -> None:
         print("No reservations found.")
         return
 
-    for r in reservations:
+    for reservation in reservations:
         print(
-            f"{r.reservation_id} | customer={r.customer_id} | "
-            f"hotel={r.hotel_id} | {r.status} | {r.created_at}"
+            f"{reservation.reservation_id} | customer={reservation.customer_id} | "
+            f"hotel={reservation.hotel_id} | {reservation.status} | "
+            f"{reservation.created_at}"
         )
+
+
+def _create_customer() -> None:
+    name = input("Name: ").strip()
+    email = input("Email: ").strip()
+    customer = Customer.create(CUSTOMERS_JSON, name, email)
+    print("Created:", customer)
+
+
+def _delete_customer() -> None:
+    customer_id = input("Customer ID: ").strip()
+    Customer.delete(CUSTOMERS_JSON, customer_id)
+    print("Customer deleted.")
+
+
+def _modify_customer() -> None:
+    customer_id = input("Customer ID: ").strip()
+    name = input("New name: ").strip()
+    email = input("New email: ").strip()
+    updated = Customer.update(CUSTOMERS_JSON, customer_id, name, email)
+    print("Updated:", updated)
+
+
+def _create_hotel() -> None:
+    name = input("Hotel name: ").strip()
+    location = input("Location: ").strip()
+    total_rooms = int(input("Total rooms: ").strip())
+    hotel = Hotel.create(HOTELS_JSON, name, location, total_rooms)
+    print("Created:", hotel)
+
+
+def _delete_hotel() -> None:
+    hotel_id = input("Hotel ID: ").strip()
+    Hotel.delete(HOTELS_JSON, hotel_id)
+    print("Hotel deleted.")
+
+
+def _modify_hotel() -> None:
+    hotel_id = input("Hotel ID: ").strip()
+    name = input("New name: ").strip()
+    location = input("New location: ").strip()
+    total_rooms = int(input("New total rooms: ").strip())
+    updated = Hotel.update(HOTELS_JSON, hotel_id, name, location, total_rooms)
+    print("Updated:", updated)
+
+
+def _create_reservation() -> None:
+    customer_id = input("Customer ID: ").strip()
+    hotel_id = input("Hotel ID: ").strip()
+
+    reservation = Reservation.create(
+        RESERVATIONS_JSON,
+        CUSTOMERS_JSON,
+        HOTELS_JSON,
+        customer_id,
+        hotel_id,
+    )
+    print("Created:", reservation)
+
+
+def _cancel_reservation() -> None:
+    reservation_id = input("Reservation ID: ").strip()
+    updated = Reservation.cancel(RESERVATIONS_JSON, HOTELS_JSON, reservation_id)
+    print("Updated:", updated)
+
+
+def _print_menu() -> None:
+    print("\nReservation System")
+    print("1) Create Customer")
+    print("2) Delete Customer")
+    print("3) Modify Customer")
+    print("4) Display Customers")
+    print("5) Create Hotel")
+    print("6) Delete Hotel")
+    print("7) Modify Hotel")
+    print("8) Display Hotels")
+    print("9) Create Reservation")
+    print("10) Cancel Reservation")
+    print("11) Display Reservations")
+    print("12) Exit")
 
 
 def main() -> None:
     """Run the CLI."""
     _ensure_files()
 
-    while True:
-        print("\nReservation System")
-        print("1) Create Customer")
-        print("2) Delete Customer")
-        print("3) Modify Customer")
-        print("4) Display Customers")
-        print("5) Create Hotel")
-        print("6) Delete Hotel")
-        print("7) Modify Hotel")
-        print("8) Display Hotels")
-        print("9) Create Reservation")
-        print("10) Cancel Reservation")
-        print("11) Display Reservations")
-        print("12) Exit")
+    actions: Dict[str, Callable[[], None]] = {
+        "1": _create_customer,
+        "2": _delete_customer,
+        "3": _modify_customer,
+        "4": _print_customers,
+        "5": _create_hotel,
+        "6": _delete_hotel,
+        "7": _modify_hotel,
+        "8": _print_hotels,
+        "9": _create_reservation,
+        "10": _cancel_reservation,
+        "11": _print_reservations,
+    }
 
+    while True:
+        _print_menu()
         option = input("Select option: ").strip()
 
+        if option == "12":
+            print("Bye.")
+            break
+
         try:
-            if option == "1":
-                name = input("Name: ").strip()
-                email = input("Email: ").strip()
-                customer = Customer.create(CUSTOMERS_JSON, name, email)
-                print("Created:", customer)
-
-            elif option == "2":
-                customer_id = input("Customer ID: ").strip()
-                Customer.delete(CUSTOMERS_JSON, customer_id)
-                print("Customer deleted.")
-
-            elif option == "3":
-                customer_id = input("Customer ID: ").strip()
-                name = input("New name: ").strip()
-                email = input("New email: ").strip()
-                updated = Customer.update(CUSTOMERS_JSON, customer_id, name, email)
-                print("Updated:", updated)
-
-            elif option == "4":
-                _print_customers()
-
-            elif option == "5":
-                name = input("Hotel name: ").strip()
-                location = input("Location: ").strip()
-                total_rooms = int(input("Total rooms: ").strip())
-                hotel = Hotel.create(HOTELS_JSON, name, location, total_rooms)
-                print("Created:", hotel)
-
-            elif option == "6":
-                hotel_id = input("Hotel ID: ").strip()
-                Hotel.delete(HOTELS_JSON, hotel_id)
-                print("Hotel deleted.")
-
-            elif option == "7":
-                hotel_id = input("Hotel ID: ").strip()
-                name = input("New name: ").strip()
-                location = input("New location: ").strip()
-                total_rooms = int(input("New total rooms: ").strip())
-                updated = Hotel.update(HOTELS_JSON, hotel_id, name, location, total_rooms)
-                print("Updated:", updated)
-
-            elif option == "8":
-                _print_hotels()
-
-            elif option == "9":
-                customer_id = input("Customer ID: ").strip()
-                hotel_id = input("Hotel ID: ").strip()
-                reservation = Reservation.create(
-                    RESERVATIONS_JSON,
-                    CUSTOMERS_JSON,
-                    HOTELS_JSON,
-                    customer_id,
-                    hotel_id,
-                )
-                print("Created:", reservation)
-
-            elif option == "10":
-                reservation_id = input("Reservation ID: ").strip()
-                updated = Reservation.cancel(
-                    RESERVATIONS_JSON,
-                    HOTELS_JSON,
-                    reservation_id,
-                )
-                print("Updated:", updated)
-
-            elif option == "11":
-                _print_reservations()
-
-            elif option == "12":
-                print("Bye.")
-                break
-
-            else:
+            action = actions.get(option)
+            if action is None:
                 print("Invalid option.")
-
+            else:
+                action()
         except ValueError as exc:
             print("[ERROR]", exc)
 
