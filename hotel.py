@@ -48,7 +48,7 @@ class Hotel:
             data = json.loads(text)
             if not isinstance(data, list):
                 print(
-                    f"[ERROR] Invalid structure in {json_path}: expected list. "
+                    f"[ERROR] Invalid structure in {json_path}: expected list."
                     "Continuing with empty list."
                 )
                 return []
@@ -94,7 +94,12 @@ class Hotel:
         return f"HOT-{max_num + 1:04d}"
 
     @staticmethod
-    def create(json_path: Path, name: str, location: str, total_rooms: int) -> Hotel:
+    def create(
+        json_path: Path,
+        name: str,
+        location: str,
+        total_rooms: int
+    ) -> Hotel:
         """Create a hotel and persist it."""
         if not name.strip():
             raise ValueError("name cannot be empty")
@@ -149,7 +154,7 @@ class Hotel:
                         reserved_rooms=int(item.get("reserved_rooms", 0)),
                     )
                 except (KeyError, TypeError, ValueError):
-                    print("[ERROR] Invalid hotel record in file. Skipping corrupted record.")
+                    print("[ERROR] Invalid hotel record in file.")
                     return None
         return None
 
@@ -169,7 +174,7 @@ class Hotel:
                     )
                 )
             except (KeyError, TypeError, ValueError):
-                print("[ERROR] Invalid hotel record in file. Skipping corrupted record.")
+                print("[ERROR] Invalid hotel record in file.")
         return result
 
     @staticmethod
@@ -195,7 +200,7 @@ class Hotel:
             if str(item.get("hotel_id")) == hotel_id:
                 reserved_rooms = int(item.get("reserved_rooms", 0))
                 if reserved_rooms > total_rooms:
-                    raise ValueError("total_rooms cannot be less than reserved_rooms")
+                    raise ValueError("total_rooms less than reserved_rooms")
 
                 updated = Hotel(
                     hotel_id=hotel_id,
