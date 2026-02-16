@@ -27,7 +27,11 @@ class TestCustomer(unittest.TestCase):
 
     def test_update_customer(self):
         c = Customer.create(self.customers_json, "Alice", "alice@test.com")
-        updated = Customer.update(self.customers_json, c.customer_id, "Alice2", "alice@test.com")
+        updated = Customer.update(
+            self.customers_json,
+            c.customer_id,
+            "Alice2",
+            "alice@test.com")
         self.assertEqual(updated.name, "Alice2")
 
     def test_delete_customer(self):

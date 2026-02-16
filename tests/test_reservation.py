@@ -20,7 +20,10 @@ class TestReservation(unittest.TestCase):
         self.hotels_json.write_text("[]", encoding="utf-8")
         self.reservations_json.write_text("[]", encoding="utf-8")
 
-        self.customer = Customer.create(self.customers_json, "Alice", "alice@test.com")
+        self.customer = Customer.create(
+            self.customers_json,
+            "Alice",
+            "alice@test.com")
         self.hotel = Hotel.create(self.hotels_json, "Hilton", "CDMX", 2)
 
     def tearDown(self):
@@ -45,7 +48,10 @@ class TestReservation(unittest.TestCase):
             self.hotel.hotel_id,
         )
 
-        updated = Reservation.cancel(self.reservations_json, self.hotels_json, r.reservation_id)
+        updated = Reservation.cancel(
+            self.reservations_json,
+            self.hotels_json,
+            r.reservation_id)
         self.assertEqual(updated.status, "CANCELED")
 
     def test_corrupted_reservations_json_does_not_crash(self):

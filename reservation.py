@@ -48,7 +48,7 @@ class Reservation:
             data = json.loads(text)
             if not isinstance(data, list):
                 print(
-                    f"[ERROR] Invalid structure in {json_path}: expected list. "
+                    f"[ERROR] Invalid structure in {json_path}: expected list."
                     "Continuing with empty list."
                 )
                 return []
