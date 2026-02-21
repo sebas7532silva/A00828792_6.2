@@ -37,6 +37,14 @@ class Reservation:
     @staticmethod
     def _load_raw(json_path: Path) -> List[Dict[str, Any]]:
         """Load list from JSON. If invalid, print error and return empty."""
+        required_keys = {
+            "reservation_id",
+            "customer_id",
+            "hotel_id",
+            "created_at",
+            "status",
+        }
+
         if not json_path.exists():
             return []
 
@@ -48,20 +56,30 @@ class Reservation:
             data = json.loads(text)
             if not isinstance(data, list):
                 print(
-                    f"[ERROR] Invalid structure in {json_path}: expected list."
+                    f"[ERROR] Invalid structure in {json_path}: expected list. "
                     "Continuing with empty list."
                 )
                 return []
 
             valid: List[Dict[str, Any]] = []
+
             for item in data:
-                if isinstance(item, dict):
-                    valid.append(item)
-                else:
+                if not isinstance(item, dict):
                     print(
                         f"[ERROR] Invalid item in {json_path}: expected dict. "
                         "Skipping item."
                     )
+                    continue
+
+                if not required_keys.issubset(item.keys()):
+                    print(
+                        f"[ERROR] Invalid reservation structure in "
+                        f"{json_path}. Skipping item."
+                    )
+                    continue
+
+                valid.append(item)
+
             return valid
 
         except json.JSONDecodeError as exc:
