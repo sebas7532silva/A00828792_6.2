@@ -1,16 +1,22 @@
 [
   {
-    "hotel_id": "HOT-0001",
-    "name": "Hilton Reforma",
-    "location": "CDMX",
-    "total_rooms": 3,
-    "reserved_rooms": 1
+    "hotel_id": "HOTEL-0001",
+    "name": "Grand Palace",
+    "location": "Monterrey",
+    "total_rooms": 50,
+    "available_rooms": 45
   },
   {
-    "hotel_id": "HOT-0002",
-    "name": "Fiesta Americana",
-    "location": "Monterrey",
-    "total_rooms": 2,
-    "reserved_rooms": 0
-  }
+    "hotel_id": "HOTEL-0002",
+    "name": "Beach Resort",
+    "location": "Cancun",
+    "total_rooms": 30,
+    "available_rooms": 30
+  },
+  {
+    "hotel_id": "HOTEL-0003",
+    "name": "Broken Hotel",
+    "rooms": 100
+  },
+  12345
 ]
